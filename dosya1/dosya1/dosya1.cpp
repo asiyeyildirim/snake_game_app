@@ -40,7 +40,7 @@ int main()
 
 
 		cout << "a";
-		Sleep(35); //hepsini aynı anda görmemek için
+		Sleep(30); //hepsini aynı anda görmemek için
 	}
 	//sağdan sola döndürme
 
@@ -50,7 +50,7 @@ int main()
 
 		cout << "a";
 
-		Sleep(35); //bekleme süresi belirterek çalıştırma.yavaş yavaş
+		Sleep(30); //bekleme süresi belirterek çalıştırma.yavaş yavaş
 
 	}
 
@@ -61,7 +61,7 @@ int main()
 
 		cout << "a";
 
-		Sleep(35); //bekleme süresi belirterek çalıştırma.yavaş yavaş
+		Sleep(30); //bekleme süresi belirterek çalıştırma.yavaş yavaş
 
 	}
 
