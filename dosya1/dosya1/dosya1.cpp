@@ -1,7 +1,7 @@
 ﻿#include<iostream>
 #include<Windows.h>
 using namespace std;
-
+// kaynak video=https://www.youtube.com/watch?v=6cfKyV0mjys
 const int genislik = 80; // sabit bir değişken oluşturduk.Nereye kadar gideceğini belirttik
 const int yukseklik = 20;
 
