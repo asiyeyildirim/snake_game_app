@@ -1,7 +1,7 @@
 ﻿#include<iostream>
 #include<Windows.h>
 
-// kaynak video:https://www.youtube.com/watch?v=6ondDUDhv6w
+// kaynak video:https://www.youtube.com/watch?v=Au4C3nU4HqI&list=PLIM5iw4GHbNU2gOPQ4pcqkHZuyQdRazc9&index=3
 using namespace std;
 
 enum YON {  //sabit değerler belirliyoruz
@@ -20,11 +20,13 @@ struct YilanHucre
 	int y;
 
 	YON yon;
+	char karakter;
 };
 
 const int genislik = 80; // sabit bir değişken oluşturduk.Nereye kadar gideceğini belirttik
 const int yukseklik = 20;
 const int maxYilanUzunlugu = 500;
+const char yilanKarakteri = 219;
 int kuyrukUzunlugu = 0;
 char sahne[genislik][yukseklik];
 char tuslar[256]; //bütün tuşlarla ilgili bilgiyi dizi içerisinde tutuyoruz.
@@ -108,14 +110,75 @@ void sinirlariolustur()
 	}
 }
 
-void klavyeKontrol()
+void yilaniHareketEttir()
 {
-	klavyeOku(tuslar);
-	if (tuslar['A'] != 0) //Sıfır ise tuşa basılmamış.
+
+	for (int i = 0; i < kuyrukUzunlugu; i++)
 	{
+		switch (yilanKuyrugu[i].yon)
+		{
+		case YON_SAG:
+			yilanKuyrugu[i].x++;
+			break;
+		case YON_SOL:
+			yilanKuyrugu[i].x--;
+			break;
+		case YON_ASAGI:
+			yilanKuyrugu[i].y++;
+			break;
+		case YON_YUKARI:
+			yilanKuyrugu[i].y--;
+			break;
+
+		}
+
 		
 	}
+	for (int i= kuyrukUzunlugu- 1; i>0; i--)
+	{
+		yilanKuyrugu[i].yon = yilanKuyrugu[i-1].yon;
+	}
+
+
 }
+void yilanKuyrugunaEkle()
+{
+
+	if (kuyrukUzunlugu == maxYilanUzunlugu)
+		return;
+
+
+	int x = yilanKuyrugu[kuyrukUzunlugu - 1].x;
+	int y = yilanKuyrugu[kuyrukUzunlugu - 1].y;
+	YON yon = yilanKuyrugu[kuyrukUzunlugu - 1].yon;
+	char kar = yilanKuyrugu[kuyrukUzunlugu - 1].karakter;
+
+	switch (yilanKuyrugu[kuyrukUzunlugu - 1].yon)
+	{
+	case YON_SAG:
+		x--;
+		break;
+	case YON_SOL:
+		x++;
+		break;
+	case YON_ASAGI:
+		y--;
+		break;
+	case YON_YUKARI:
+		y++;
+		break;
+
+	}
+
+	yilanKuyrugu[kuyrukUzunlugu].x = x;
+	yilanKuyrugu[kuyrukUzunlugu].y = y;
+	yilanKuyrugu[kuyrukUzunlugu].yon = yon;
+	yilanKuyrugu[kuyrukUzunlugu].karakter = kar;
+
+	kuyrukUzunlugu++;
+
+}
+
 void yilanOlustur()
 {
 	kuyrukUzunlugu = 1;
@@ -124,19 +187,54 @@ void yilanOlustur()
 	yilanKuyrugu[0].x = 20;
 	yilanKuyrugu[0].y = 10;
 	yilanKuyrugu[0].yon = YON_SAG;
-
-
-
+	yilanKuyrugu[0].karakter = yilanKarakteri;
+	yilanKuyrugunaEkle();
+	yilanKuyrugunaEkle();
 }
 
 void yilaniSahneyeYerlestir()
 {
 	for (int i = 0; i < kuyrukUzunlugu; i++)
 	{
-
+		int x = yilanKuyrugu[i].x;
+		int y = yilanKuyrugu[i].y;
+		sahne[x][y] = yilanKuyrugu[i].karakter;
 	}
 
 }
+
+void klavyeKontrol()
+{
+	klavyeOku(tuslar);
+	if (tuslar['A'] != 0) //harfe basınca sola gitmesi için
+	{
+		yilanKuyrugu[0].yon = YON_SOL;
+	}
+
+	if (tuslar['D'] != 0) //harfe basınca sağa gitmesi için
+	{
+		yilanKuyrugu[0].yon = YON_SAG;
+	}
+
+	if (tuslar['W'] != 0) //harfe basınca yukarı gitmesi için
+	{
+		yilanKuyrugu[0].yon = YON_YUKARI;
+	}
+
+	if (tuslar['S'] != 0) //harfe basınca aşağı gitmesi için
+	{
+		yilanKuyrugu[0].yon = YON_ASAGI;
+	}
+
+	//yılanın büyümesi için
+
+	if (tuslar['P'] != 0) //harfe basınca aşağı gitmesi için
+	{
+		yilanKuyrugunaEkle();
+	}
+
+
+}  
 
 
 int main()
@@ -153,6 +251,9 @@ int main()
 		sahneyiTemizle();
 		sinirlariolustur();
 		klavyeKontrol();
+
+		yilaniHareketEttir();
+		yilaniSahneyeYerlestir();
 
 		gotoxy(0, 0);
 		sahneyiCiz();
